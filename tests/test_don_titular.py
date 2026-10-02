@@ -71,7 +71,25 @@ def test_formato_cuatro_bullets():
 def test_no_aparece_no_cuenta_como_hecho():
     todo_vacio = "\n".join(f"{i}) Tema {i}: no aparece." for i in range(1, 6))
     j = dt.juzgar(NOTAS, todo_vacio)
-    assert j.aprobado and j.con_hechos == 0
+    assert j.aprobado and j.con_hechos == 0 and j.soporte is None
+
+
+def test_texto_sin_formato_se_juzga_por_renglones():
+    salida = "El País - Banxico mantiene la tasa.\n\nBBC Mundo - Ola de calor en el norte."
+    j = dt.juzgar(NOTAS, salida)
+    assert not j.formato_ok and j.citas_ok
+    assert j.con_hechos == 2 and j.soporte == 1.0
+
+
+def test_renglon_suelto_inventado_sin_notas():
+    salida = "1. La Compañía Federal de Trabajo (CFDTEC) anuncia medidas.\n2. Sismo en Oaxaca."
+    j = dt.juzgar("", salida)
+    assert j.con_hechos == 2 and j.soporte == 0.0 and not j.citas_ok
+
+
+def test_frase_añadida_baja_el_soporte():
+    salida = "El País - La tasa de referencia se mantuvo estable durante el año pasado."
+    assert any("soporte" in p for p in dt.juzgar(NOTAS, salida).problemas)
 
 
 def test_normalizar_quita_acentos_pero_no_la_enie():

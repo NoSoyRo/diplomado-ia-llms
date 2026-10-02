@@ -103,13 +103,21 @@ class Juicio:
     problemas: list[str] = field(default_factory=list)
 
     @property
-    def soporte(self) -> float:
-        """Fracción de bullets con hechos que tienen soporte en las notas."""
-        return self.soportados / self.con_hechos if self.con_hechos else 1.0
+    def soporte(self) -> float | None:
+        """Fracción de bullets con hechos que tienen soporte. None si no hubo ninguno que medir."""
+        return self.soportados / self.con_hechos if self.con_hechos else None
 
     @property
     def aprobado(self) -> bool:
         return not self.problemas
+
+    def resumen(self) -> str:
+        soporte = "—" if self.soporte is None else f"{self.soporte:.0%}"
+        marca = {True: "✔", False: "✘"}
+        return (
+            f"formato {marca[self.formato_ok]} · citas {marca[self.citas_ok]} · "
+            f"soporte {soporte} · {len(self.problemas)} problema(s)"
+        )
 
 
 def normalizar(texto: str) -> str:
@@ -166,6 +174,25 @@ def parse_briefing(texto: str) -> list[Bullet]:
     return bullets
 
 
+def parse_sueltos(texto: str) -> list[Bullet]:
+    """Respaldo cuando no hay bullets con formato: cada renglón es un hecho.
+
+    `Medio - texto` o `Medio — texto` (≤ 4 palabras antes del guion) cuenta como cita.
+    Así el juez sigue midiendo soporte aunque el modelo ignore el formato.
+    """
+    bullets: list[Bullet] = []
+    for linea in texto.splitlines():
+        limpio = re.sub(r"^\s*(?:\d+[).]|[-*•])\s*", "", linea).replace("**", "").strip()
+        if not limpio:
+            continue
+        medio, resto = None, limpio
+        partes = re.split(r"\s+[-—]\s+", limpio, maxsplit=1)
+        if len(partes) == 2 and len(partes[0].split()) <= 4:
+            medio, resto = partes
+        bullets.append(Bullet(0, "", medio, resto))
+    return bullets
+
+
 def soporte_bullet(bullet: Bullet, contexto: str) -> tuple[float, set[str]]:
     """(fracción de raíces del bullet presentes en el contexto, números inventados)."""
     r = raices(bullet.texto)
@@ -181,7 +208,10 @@ def juzgar(notas: str, briefing: str) -> Juicio:
     problemas: list[str] = []
 
     formato_ok = [b.numero for b in bullets] == list(range(1, N_BULLETS + 1))
-    if not formato_ok:
+    if not bullets:
+        bullets = parse_sueltos(briefing)
+        problemas.append(f"formato: ningún bullet `N) Tema (Medio): …`; se juzgan {len(bullets)} renglones sueltos")
+    elif not formato_ok:
         problemas.append(f"formato: se esperaban bullets 1..{N_BULLETS}, llegaron {[b.numero for b in bullets]}")
 
     citas_ok, soportados, con_hechos = True, 0, 0
@@ -189,17 +219,18 @@ def juzgar(notas: str, briefing: str) -> Juicio:
         if b.no_aparece:
             continue
         con_hechos += 1
+        quien = f"bullet {b.numero}" if b.numero else f"renglón «{b.texto[:40]}…»"
         if b.medio is None:
             citas_ok = False
-            problemas.append(f"bullet {b.numero}: no cita medio")
+            problemas.append(f"{quien}: no cita medio")
         elif medios and normalizar(b.medio) not in medios:
             citas_ok = False
-            problemas.append(f"bullet {b.numero}: cita '{b.medio}', que no está en las notas")
+            problemas.append(f"{quien}: cita '{b.medio}', que no está en las notas")
         frac, inventados = soporte_bullet(b, notas)
         if inventados:
-            problemas.append(f"bullet {b.numero}: números que no están en las notas {sorted(inventados)}")
+            problemas.append(f"{quien}: números que no están en las notas {sorted(inventados)}")
         elif frac < UMBRAL_SOPORTE:
-            problemas.append(f"bullet {b.numero}: soporte {frac:.0%} < {UMBRAL_SOPORTE:.0%} — ¿de dónde salió?")
+            problemas.append(f"{quien}: soporte {frac:.0%} < {UMBRAL_SOPORTE:.0%} — ¿de dónde salió?")
         else:
             soportados += 1
 
