@@ -39,7 +39,7 @@ python don_titular.py ejemplo-briefing.jsonl     # 44/44 filas pasan
 
 ## `ejemplo-briefing.jsonl` — dataset Don Titular
 
-Cada renglón es `{"messages": [system, user, assistant]}`. El system pone las reglas, el user trae las notas, el assistant es el briefing canónico. Son **44 filas** (2026-07-01 … 08-19), todas pasan el juez: alcanzan para ver el efecto del LoRA, no para producción. El reto pide 100+ de tu oficio, revisadas por ti.
+Cada renglón es `{"messages": [system, user, assistant]}`. El system pone las reglas, el user trae las notas, el assistant es el briefing canónico. Son **44 filas** (2026-07-01 … 08-19), todas pasan el juez: alcanzan para ver el efecto del LoRA, no para producción. En la sesión 6 escribes 20 de tu oficio, revisadas por ti.
 
 `holdout.jsonl` trae 10 días **posteriores** (08-20 … 08-29) que nunca entran al entrenamiento. `salidas_referencia.json` guarda lo que respondió Qwen en esos 10 días en las tres condiciones (lo regenera `scripts/generar_referencia.py --adapter parte-3-oficio/don-titular-lora`).
 

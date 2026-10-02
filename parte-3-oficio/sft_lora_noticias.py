@@ -46,7 +46,7 @@ Regla de oro
 Si el assistant menciona algo que no está en el user, se tira el ejemplo.
 Anti-alucinación con datos, no con un sermón. Este JSONL trae 44 filas
 que pasan `don_titular.py`: alcanza para ver el efecto, no para producción.
-Para el reto: 100+ de tu oficio, revisadas a mano.
+En serio: cientos de filas de tu oficio, revisadas a mano.
 
     pip install "transformers>=4.45" peft trl datasets accelerate
     # GPU 4-bit (Colab T4):

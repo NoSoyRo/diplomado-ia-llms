@@ -13,6 +13,8 @@ pip install -r requirements-oficio.txt   # Parte III: LoRA (GPU / Colab T4)
 
 Cada notebook sigue la misma receta: **intuición dummy** → **una fórmula** → código que puedes romper → **entregable**. Las [notas](notas/) son el resumen de estudio de cada parte, en el mismo orden.
 
+**Cómo se lleva:** 8 sesiones, una por notebook ([`SESIONES.md`](SESIONES.md)). Se califica el [reto](reto/): un mini-LLM por carácter, **50% código + 50% `reporte.pdf`**.
+
 ---
 
 ## Ruta
@@ -30,7 +32,7 @@ Cada notebook sigue la misma receta: **intuición dummy** → **una fórmula** �
 | 06 | [`06_reportero_y_dataset.ipynb`](parte-3-oficio/06_reportero_y_dataset.ipynb) | RSS → notas → filas de chat. La regla de oro tira ejemplos. | CPU, sin torch |
 | 07 | [`07_gym_lora.ipynb`](parte-3-oficio/07_gym_lora.ipynb) | El gym: SFT + LoRA de verdad, curva train/val, con lentes vs sin lentes. | Colab T4 (~2 min) / MPS |
 | 08 | [`08_juicio_antes_despues.ipynb`](parte-3-oficio/08_juicio_antes_despues.ipynb) | Tabla zero-shot vs few-shot vs LoRA en 10 prompts de hold-out, con juez reproducible. | CPU, sin torch |
-| | **[Reto](reto/)** | Tu oficio, no el nuestro. Checklist de entrega. | |
+| | **[Reto](reto/)** | Tu mini-LLM por carácter: código + `reporte.pdf`. Es lo que se califica. | |
 
 Extras de la Parte I (temario viejo, opcionales): [`parte-1-motor/extra/`](parte-1-motor/extra/) — grid de hiperparámetros, scaling, memoria/VRAM.
 
@@ -43,7 +45,8 @@ diplomado-ia-llms/
 ├── parte-2-chef/       04–05
 ├── parte-3-oficio/     06–08, rss_reportero.py, don_titular.py, sft_lora_noticias.py,
 │                       ejemplo-briefing.jsonl (44 filas), holdout.jsonl (10 días posteriores)
-├── reto/               enunciado y checklist del reto final
+├── reto/               enunciado, rúbrica (código + reporte.pdf) y checklist
+├── SESIONES.md         8 sesiones: una actividad y un entregable por notebook
 ├── datos/quijote.txt   corpus de la Parte I y II (~2M caracteres)
 ├── pdfs/               PDFs históricos del temario (las notas vivas son el ebook)
 ├── scripts/            run_notebooks.py (CI), generar_referencia.py (salidas guardadas del 08)
@@ -63,7 +66,7 @@ Colab solo baja el notebook. La primera celda de código trae comentados el `%pi
  reportero        el papel         conductor
 ```
 
-¿Dónde está **el día**? En el feed. ¿Dónde está **el estilo**? En los lentes. ¿Dónde está **el idioma**? En el pretrain que no hiciste tú. Si confundes las tres, el reto se cae.
+¿Dónde está **el día**? En el feed. ¿Dónde está **el estilo**? En los lentes. ¿Dónde está **el idioma**? En el pretrain que no hiciste tú. Si confundes las tres, la Parte III se cae.
 
 ## Para el profe / CI
 

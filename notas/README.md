@@ -1,6 +1,6 @@
 # Notas de estudio
 
-Resumen para repasar **después** de correr cada notebook. El ebook explica con calma; estas notas son lo que tienes que poder decir en voz alta en el examen o en la demo del reto.
+Resumen para repasar **después** de correr cada notebook. El ebook explica con calma; estas notas son lo que tienes que poder decir en voz alta en el oral o en el reporte del reto.
 
 | Nota | Notebooks | En una frase |
 |---|---|---|
@@ -24,4 +24,4 @@ Parte II  chef       el mismo P, pero con 494 M de parámetros que no entrenaste
 Parte III oficio     P(y | system, notas): notas del reportero + lentes LoRA + juez
 ```
 
-Si en la demo del reto alguien pregunta "¿y dónde está la inteligencia?", la respuesta tiene tres partes: el **idioma** está en el pretrain (no lo hiciste tú), el **día** está en las notas (no está en el modelo) y el **oficio** está en el adapter (eso sí lo entrenaste tú).
+Si alguien te pregunta "¿y dónde está la inteligencia?" de Qwen con LoRA, la respuesta tiene tres partes: el **idioma** está en el pretrain (no lo hiciste tú), el **día** está en las notas (no está en el modelo) y el **oficio** está en el adapter (eso sí lo entrenaste tú).

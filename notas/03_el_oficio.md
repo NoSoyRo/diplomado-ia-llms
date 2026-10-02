@@ -33,7 +33,7 @@ El día lo trae un script (reportero), el oficio lo aprende un parche barato (Lo
 
 **Hold-out por fecha.** Si el mismo día está en train y en prueba, el modelo ya vio esas notas. Separa por fecha, no al azar.
 
-**Cuánto.** El ejemplo trae 44 filas: basta para que el LoRA aprenda el formato, no para que cite siempre (sección 6). El reto pide 100+ de **tu** oficio. Incluye filas con "no aparece": si nunca lo practica, nunca lo dice.
+**Cuánto.** El ejemplo trae 44 filas: basta para que el LoRA aprenda el formato, no para que cite siempre (sección 6). En la sesión 6 escribes 20 de **tu** oficio; para que un LoRA cite de verdad harían falta cientos. Incluye filas con "no aparece": si nunca lo practica, nunca lo dice.
 
 ## 3. El juez (`don_titular.py`)
 

@@ -18,4 +18,4 @@ Notas de estudio: [`notas/02_el_chef.md`](../notas/02_el_chef.md).
 
 **Math.** Sin evidencia, el modo $\arg\max_y P_\theta(y\mid q)$ es lo típico del pretrain, no el día. Con notas, $P_\theta(y\mid q,d)$ concentra masa en lo que $d$ dice. El chat template $\varphi$ es parte del modelo: otro formato = otra distribución.
 
-**Entregable.** Dos salidas guardadas (sin notas / con notas) calificadas por el juez `don_titular.py`. Esa captura es el "antes" del reto.
+**Entregable.** Dos salidas guardadas (sin notas / con notas) calificadas por el juez `don_titular.py`. Esa captura es el "antes" de la sesión 8.

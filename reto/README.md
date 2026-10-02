@@ -1,63 +1,119 @@
-# Reto · Tu oficio, no el nuestro
+# Reto · Tu mini-LLM
 
-Construye un sistema con las tres piezas del módulo — **motor**, **lentes**, **reportero** — para un oficio que **no** sea el noticiero copiado. Demo de 8 minutos.
+Diseña, entrena y evalúa un modelo de lenguaje **por carácter** (GRU o mini-Transformer causal) sobre un texto que tú elijas. Se califica con dos cosas: **tu código** y **un `reporte.pdf` que explica todo**.
 
-PDF histórico del enunciado: [`pdfs/05_02_RetoLLM.pdf`](../pdfs/05_02_RetoLLM.pdf). Lo que manda es este README y el capítulo 5 del ebook.
+Enunciado oficial: [`pdfs/05_02_RetoLLM.pdf`](../pdfs/05_02_RetoLLM.pdf). Este README es ese enunciado en checklist, más cómo se califica.
 
-## Lo que tienes que poder decir en la demo
+Material de apoyo: [`parte-1-motor/01`](../parte-1-motor/01_next_token_gru.ipynb) (GRU), [`02`](../parte-1-motor/02_el_vaso_no_basta.ipynb) (contexto), [`03`](../parte-1-motor/03_mini_transformer.ipynb) (Transformer) y [`notas/01_el_motor.md`](../notas/01_el_motor.md). Puedes partir de ese código; lo que no puedes es entregarlo tal cual sobre el Quijote.
 
-- Un LLM apuesta el siguiente token.
-- Yo no entrené el cerebro; le puse lentes (LoRA).
-- Los datos del día no están en los lentes; los trae el reportero.
-- Los lentes enseñan el oficio y a no inventar.
-- Si le quito el papel, vuelve a alucinar.
+---
 
-## Ideas de oficio
+## Qué entregas
 
-- Briefing de movilidad CDMX (alertas, no "el tráfico en general").
-- "Explícame este DOF / esta Gaceta como si tuviera 15 años."
-- Guardia de tu materia: preguntas de tu tesis con papers pegados.
-- Resumen de 3 papers de tu lab, sin citar lo que no está en el PDF.
-- Noticiero de un municipio, un deporte o un mercado, con feed propio.
+Un repo (o carpeta comprimida) con:
 
-## Requisitos mínimos
+```
+mi-mini-llm/
+├── corpus.txt          tu texto (10 KB – 500 KB), NO el Quijote
+├── entrenar.py         o un notebook: corre de cero con un comando
+├── config.json         hiperparámetros, arquitectura, rutas y semilla de la corrida del reporte
+├── resultados/         log de train/val por época, la figura de la curva, las 3 muestras
+└── reporte.pdf         lo que se califica junto con el código
+```
 
-| Pieza | Qué entregar | Material de apoyo |
+## Requisitos (del enunciado oficial)
+
+| # | Requisito | En el código | En el PDF |
+|---|---|---|---|
+| 3.1 | **Datos**: un `.txt` de 10–500 KB, origen documentado, limpieza mínima si hace falta | carga + limpieza en una función | de dónde salió, tamaño en KB, qué limpiaste y por qué |
+| 3.2 | **Tokenización por carácter**: vocabulario, `stoi`, `itos` explícitos | `build_vocab`, `encode`, `decode` | $\lvert V\rvert$ y 5 caracteres "raros" de tu corpus |
+| 3.3 | **Modelo**: GRU **o** mini-Transformer causal; next-token; sin ver el futuro; distribución sobre $V$ | la clase del modelo; máscara causal si es Transformer | diagrama o tabla de capas, número de parámetros, por qué esa arquitectura |
+| 3.4 | **Entrenamiento**: entropía cruzada, Adam/AdamW, mini-batches; registra train_loss, val_loss y épocas | loop de entrenamiento + log | la curva train/val y qué te dice |
+| 3.5 | **Evaluación**: val_loss final y perplejidad = `exp(val_loss)` | se imprime y se guarda | comparada contra el ancla $\ln\lvert V\rvert$ (modelo que no aprendió nada) |
+| 3.6 | **Generación**: prompt fijo, ≥ 3 temperaturas, 300–600 tokens | función `generate` con temperatura | las 3 muestras y qué cambia con $T$ |
+| 3.7 | **Reproducibilidad**: semillas fijas, configuración completa guardada | `torch.manual_seed`, `config.json` | la tabla de configuración tal cual |
+
+## Qué tiene que explicar el `reporte.pdf`
+
+"Explicar todo" quiere decir que alguien que no vio tu código entiende qué hiciste y por qué. En este orden:
+
+1. **Portada.** Nombre completo, número de cuenta o ID del diplomado, fecha.
+2. **Datos.** Origen, tamaño, limpieza, $\lvert V\rvert$.
+3. **El problema.** Qué es next-token prediction. La regla de la cadena $P(x_1,\dots,x_T)=\prod_t P(x_t\mid x_{<t})$ y la entropía cruzada que minimizas. **Pega las líneas de tu código donde nace la etiqueta $y$** y explica por qué nadie la anotó a mano.
+4. **El modelo.** Arquitectura, tamaños, número de parámetros. Si es Transformer: qué hace la máscara causal y qué pasa sin ella. Si es GRU: qué es el estado $h$ y su límite.
+5. **Entrenamiento.** Hiperparámetros (la tabla de `config.json`), cómo separaste train/val y por qué no hay fuga, la curva.
+6. **Resultados.** val_loss final, perplejidad, el ancla $\ln\lvert V\rvert$, y una frase: ¿memorizó o generalizó? (mira la distancia entre train y val).
+7. **Generación.** Las 3 muestras con el mismo prompt. Qué aprendió (ortografía, puntuación, palabras de tu corpus) y qué no (sentido, frases largas).
+8. **Limitaciones y una mejora.** Una limitación medida (no "faltó tiempo") y una mejora concreta en datos, cómputo o arquitectura, con el número que esperas mover.
+
+Extensiones opcionales del enunciado (GRU vs Transformer, efecto de `seq_len`, tamaño del modelo, acumulación de gradientes, AMP, estudio de hiperparámetros): suman en el PDF si las mides **con un experimento justo** (cambia una sola cosa; ver [notebook 02](../parte-1-motor/02_el_vaso_no_basta.ipynb)). No sustituyen ningún requisito.
+
+---
+
+## Cómo se califica
+
+**Nota = 50% código + 50% reporte.** Cada eje se califica sobre 10.
+
+### Código (50%)
+
+| Criterio | Puntos | Qué se revisa |
 |---|---|---|
-| **Motor** | Lab 0 o mini-GPT: curvas train/val, 3 temperaturas, y en el código la flecha "aquí está la etiqueta". Corpus documentado. | `parte-1-motor/01`, `03` |
-| **Lentes** | Base open-weight ≤ 1.7 B (Qwen2.5-0.5B, SmolLM2-360M/1.7B, Llama-3.2-1B…). LoRA o QLoRA. Adapter + `adapter_config.json` + `entrenamiento.json` (`r`, `lr`, épocas, semilla, `model_id`). | `parte-3-oficio/07_gym_lora.ipynb` |
-| **Dataset** | JSONL de chat propio, **≥ 100** filas revisadas a mano. Regla de oro aplicada: cuántas tiraste y por qué. | `parte-3-oficio/06`, `don_titular.py` |
-| **Reportero** | Script que trae los datos frescos. Documenta origen, fecha y qué pasa si la fuente está caída. Sin papel, el sistema se niega o avisa — no inventa. | `parte-3-oficio/rss_reportero.py` |
-| **Juicio** | Tabla antes vs después en ≥ 5 prompts de hold-out separados por fecha: `zero-shot`, `few-shot`, `lora`, más tu columna humana. | `parte-3-oficio/08` |
+| Datos y tokenización | 2 | carga, limpieza, `stoi`/`itos` explícitos; `decode(encode(s)) == s` |
+| Modelo | 2 | GRU o Transformer escrito por ti; logits de tamaño $\lvert V\rvert$; causal |
+| Entrenamiento | 2 | entropía cruzada, Adam/AdamW, mini-batches, train/val sin fuga, log por época |
+| Evaluación y generación | 2 | val_loss y perplejidad; `generate` auto-regresivo con temperatura; ≥ 3 temperaturas |
+| Reproducibilidad | 2 | semilla, `config.json`, corre de cero con un comando y da los números del reporte |
 
-## Demo de 8 minutos
+**Techos del código:**
 
-1. Tu oficio y por qué te importa (30 s).
-2. Diagrama: motor / lentes / reportero, señalando dónde está el día, el estilo y el idioma.
-3. Tabla antes vs después en hold-out.
-4. En vivo: entra un dato fresco, sale el oficio.
-5. En vivo: le quitas el papel. ¿Se niega o inventa?
-6. Una limitación honesta y una mejora concreta (cómputo, datos o eval). "Faltó tiempo" no cuenta.
+- No corre con el comando que dice el reporte → ≤ 5
+- Tokenización que no es por carácter → ≤ 6
+- Transformer sin máscara causal (o GRU bidireccional) → ≤ 5
+- Sin validación (solo train_loss) → ≤ 6
+- El notebook del curso tal cual sobre el Quijote → ≤ 4
 
-## Checklist de entrega
+### Reporte (50%)
 
-- [ ] Lab 0 o mini-GPT: curvas + 3 temperaturas + "la etiqueta está aquí".
-- [ ] `model_id` ≤ 1.7 B + adapter + `adapter_config.json` + semilla.
-- [ ] JSONL propio ≥ 100 filas; `python don_titular.py mi-dataset.jsonl` sin errores (o tu juez adaptado a tu formato).
-- [ ] Conteo de filas tiradas (por el juez y a mano), con 3 ejemplos.
-- [ ] Reportero documentado; la inferencia sin papel se niega o avisa.
-- [ ] Tabla antes/después en hold-out; tu LoRA comparado contra **few-shot**, no solo contra zero-shot.
-- [ ] Diagrama motor / lentes / reportero.
-- [ ] Una limitación que no sea "faltó tiempo".
+| Criterio | Puntos | Qué se revisa |
+|---|---|---|
+| Datos y problema | 2 | secciones 2–3; la etiqueta señalada en **tu** código |
+| Modelo y entrenamiento | 2 | secciones 4–5; decisiones justificadas, no solo listadas |
+| Resultados | 2 | sección 6; curva, perplejidad contra el ancla, memorizó/generalizó |
+| Generación | 2 | sección 7; 3 muestras y lectura de cada temperatura |
+| Limitaciones y mejora | 2 | sección 8; medida y concreta |
 
-## Extensiones (si te sobra)
+**Techos del reporte:**
 
-- Comparar dos bases (0.5 B vs 1.7 B) con el mismo dataset.
-- QLoRA vs LoRA: VRAM, tiempo y calidad del juicio.
-- Una regla nueva en el juez (atribución, negaciones) y cuántos casos nuevos caza.
-- Servir en Ollama / GGUF, no solo Gradio.
-- Un segundo oficio con el mismo adapter: ¿dónde se rompe?
+- Sin `reporte.pdf`, o PDF que es imagen (texto no seleccionable) → ≤ 5
+- Portada sin nombre o sin número de cuenta / ID → ≤ 6
+- Números del PDF que no salen de tu código o `resultados/` → ≤ 5
+- Párrafos genéricos (de un LLM o del ebook) sin tus números → ≤ 6
+- "Faltó tiempo" como limitación → la sección 8 vale 0
 
-## Si tu oficio no es "5 bullets"
+Extra (LaTeX, figuras de más, una sim, un segundo modelo) **no resta**.
 
-`don_titular.py` está hecho para el noticiero. Cópialo y cambia `SYSTEM`, `N_BULLETS` y `parse_briefing` a tu formato. Lo que no cambias es la idea: **cada hecho de la salida tiene que poder señalarse en la entrada**.
+## Checklist antes de entregar
+
+- [ ] `corpus.txt` de 10–500 KB, que no es el Quijote, con origen en el PDF.
+- [ ] `stoi`, `itos`, `encode`, `decode` explícitos.
+- [ ] GRU o Transformer causal; next-token; logits sobre $V$.
+- [ ] Entropía cruzada + Adam/AdamW + mini-batches; train/val por época guardados.
+- [ ] val_loss final + perplejidad + ancla $\ln\lvert V\rvert$.
+- [ ] Prompt fijo, 3 temperaturas, 300–600 tokens.
+- [ ] Semilla + `config.json`; corre de cero con un comando.
+- [ ] `reporte.pdf` con texto seleccionable, portada completa y las 8 secciones.
+- [ ] En el PDF, las líneas de tu código donde nace $y$.
+
+## Lo que tienes que poder decir en el oral (30 s cada una)
+
+- ¿Dónde está la etiqueta y por qué nadie la anotó?
+- ¿Qué significa tu perplejidad? ¿Contra qué la comparas?
+- ¿Qué pasa con la loss si quitas la máscara causal (o si $y$ fuera igual a $x$)?
+- ¿Por qué con $T$ baja se repite y con $T$ alta se rompe?
+- ¿Tu modelo memorizó o generalizó? ¿Qué número lo dice?
+
+---
+
+## El resto del módulo (no se califica en el reto)
+
+Las Partes II y III (Qwen, chat template, LoRA, reportero, juez) son las **actividades** de las sesiones 4–8: ver [`SESIONES.md`](../SESIONES.md). Sirven para la sección 8 del reporte: un LLM de verdad tiene los mismos tres problemas que tu mini-LLM (no sabe el día, inventa, el formato hay que enseñárselo), a otra escala.
