@@ -87,6 +87,13 @@ def test_renglon_suelto_inventado_sin_notas():
     assert j.con_hechos == 2 and j.soporte == 0.0 and not j.citas_ok
 
 
+def test_markdown_suelto_detecta_medio_inventado():
+    salida = "**Resumen:**\n- **El País**: Banxico mantiene la tasa.\n- **La República**: ola de calor en el norte."
+    j = dt.juzgar(NOTAS, salida)
+    assert j.con_hechos == 2
+    assert any("La República" in p for p in j.problemas)
+
+
 def test_frase_añadida_baja_el_soporte():
     salida = "El País - La tasa de referencia se mantuvo estable durante el año pasado."
     assert any("soporte" in p for p in dt.juzgar(NOTAS, salida).problemas)

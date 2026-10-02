@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "modelo": "Qwen/Qwen2.5-0.5B-Instruct",
+    "decodificacion": "greedy",
+    "max_new_tokens": 220,
+    "fecha": "2026-10-02"
+  },
+  "salidas": {
+    "h1-economia": {
+      "zero-shot": "**Resumen:**\n- **Economía**: El peso cerró la semana en 18.40 dólares por dólar, con la expectativa de recortes de la Fed.\n- **Expansión**: Pemex reportó una pérdida trimestral menor a la esperada.\n- **La República**: La inflación de la primera quincena subió a 4.1%, lo que es menos que la prevista.\n\n**Medio:** El Economista, Expansión, El País",
+      "few-shot": "1) El Economista: 18.40 por dólar.\n2) Expansión: pérdida trimestral menor a la esperada.\n3) El País: inflación de la primera quincena sube a 4.1%."
+    },
+    "h2-clima": {
+      "zero-shot": "Conagua: Tormenta tropical Ileana se formará frente a Guerrero, con lluvias intensas en la costa durante 48 horas.\n\nLocal: Suspenden clases en 12 municipios de Oaxaca por lluvias.",
+      "few-shot": "1) Conagua (Conagua): torrenta tropical Ileana se formará.\n   Se espera lluvias intensas en la costa durante 48 horas.\n2) Oaxaca (Local): suspenden clases en 12 municipios."
+    },
+    "h3-deportes": {
+      "zero-shot": "**Resumen:**\n- **ESPN**: Los Pumas derrotan al Cruz Azul en el Olímpico Universitario, logrando su victoria en la fecha 2026 de la Liga MX.\n- **Marca**: El Tri convoca a 26 jugadores para la fecha FIFA, incluyendo un portero recuperado tras una lesión.\n- **Récords**: La Liga MX anuncia el horario de la jornada 8, con el objetivo de mejorar la organización y la eficiencia de los partidos.\n\n**Medio:** ESPN, marca y Récords",
+      "few-shot": "1) ESPN (ESPN): Pumas vence 2-0 a Cruz Azul en el Olímpico Universitario.\n2) Marca (Marca): El Tri convoca a 26 jugadores para la fecha FIFA.\n   Regresa un portero tras lesión.\n3) Récords (Récord): La Liga MX anuncia horario de la jornada 8."
+    },
+    "h4-movilidad": {
+      "zero-shot": "**Resumen del 2026-08-23**\n\n1. **Local**: La reforma se cerrará a las 10:00 horas, con opciones para los Insurgentes y Circuito Interior.\n\n2. **Metro CDMX**: La Línea 3 se retrasará por una marcha lenta debido a la revisión de vías.\n\n3. **El Universal**: El nuevo Ecobici ha sumado 150 ciclos de estación nuevas.",
+      "few-shot": "1) Metro CDMX: cierre por marcha a partir de las 10:00.\n2) Reforma: se recomienda Insurgentes y Circuito Interior.\n3) Metro CDMX: marcha lenta en la Línea 3.\n4) El Universal: ecobici suma 150 cicloestaciones nuevas."
+    },
+    "h5-unam": {
+      "zero-shot": "**Resumen:**\n- **Gaceta UNAM**: Arranca el semestre 2027-1 con 360 mil estudiantes.\n- **La Jornada**: La Facultad de Ingeniería abrió un diplomado de IA.\n\n**Citas:**  \n- **Gaceta UNAM**: \"Arranca el semestre 2027-1 con 360 mil alumnos.\"\n- **La Jornada**: \"La Facultad de Ingeniería abre un diplomado de IA.\"",
+      "few-shot": "1) Gaceta UNAM: arranca semestre 2027-1 con 360 mil estudiantes.\n2) La Jornada: abre un diplomado de IA."
+    }
+  }
+}

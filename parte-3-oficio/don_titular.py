@@ -177,16 +177,17 @@ def parse_briefing(texto: str) -> list[Bullet]:
 def parse_sueltos(texto: str) -> list[Bullet]:
     """Respaldo cuando no hay bullets con formato: cada renglón es un hecho.
 
-    `Medio - texto` o `Medio — texto` (≤ 4 palabras antes del guion) cuenta como cita.
+    `Medio - texto`, `Medio — texto` o `**Medio**: texto` (≤ 4 palabras antes)
+    cuenta como cita. Encabezados sin contenido (`**Resumen:**`) se saltan.
     Así el juez sigue midiendo soporte aunque el modelo ignore el formato.
     """
     bullets: list[Bullet] = []
     for linea in texto.splitlines():
-        limpio = re.sub(r"^\s*(?:\d+[).]|[-*•])\s*", "", linea).replace("**", "").strip()
-        if not limpio:
+        limpio = re.sub(r"^\s*(?:\d+[).]|[-*•])\s*", "", linea.replace("**", "")).strip()
+        if not limpio or limpio.endswith(":"):
             continue
         medio, resto = None, limpio
-        partes = re.split(r"\s+[-—]\s+", limpio, maxsplit=1)
+        partes = re.split(r"\s+[-—]\s+|:\s+", limpio, maxsplit=1)
         if len(partes) == 2 and len(partes[0].split()) <= 4:
             medio, resto = partes
         bullets.append(Bullet(0, "", medio, resto))
