@@ -1,0 +1,6 @@
+# Tests y ejecución de notebooks sin torch (04, 06, 07).
+pytest>=8
+ruff>=0.6
+nbformat>=5.10
+nbclient>=0.10
+ipykernel>=6.29

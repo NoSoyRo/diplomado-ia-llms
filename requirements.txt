@@ -1,0 +1,4 @@
+# Parte I (motor) y Parte II (chef). CPU basta.
+torch>=2.2
+transformers>=4.45
+accelerate>=0.30
