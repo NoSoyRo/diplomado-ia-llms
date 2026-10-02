@@ -25,7 +25,7 @@ Cada notebook sigue la misma receta: **intuición dummy** → **una fórmula** �
 | 03 | [`03_mini_transformer.ipynb`](parte-1-motor/03_mini_transformer.ipynb) | Atención, máscara causal, posición. | CPU |
 | | **[Parte II · El chef ya existe](parte-2-chef/)** | | |
 | 04 | [`04_bpe_a_mano.ipynb`](parte-2-chef/04_bpe_a_mano.ipynb) | El tokenizer se entrena: BPE desde cero sobre el Quijote. | CPU, sin torch |
-| 05 | [`05_chat_template_y_villano.ipynb`](parte-2-chef/05_chat_template_y_villano.ipynb) | Qwen real: base vs instruct, chat template, el villano que inventa el día. | CPU lento / Colab |
+| 05 | [`05_chat_template_y_villano.ipynb`](parte-2-chef/05_chat_template_y_villano.ipynb) | Qwen real: base vs instruct, chat template, el villano que inventa el día. | CPU (~1 min, baja 2 GB) / Colab |
 | | **[Parte III · El oficio](parte-3-oficio/)** | | |
 | 06 | [`06_reportero_y_dataset.ipynb`](parte-3-oficio/06_reportero_y_dataset.ipynb) | RSS → notas → filas de chat. La regla de oro tira ejemplos. | CPU, sin torch |
 | — | [`sft_lora_noticias.py`](parte-3-oficio/sft_lora_noticias.py) | SFT + LoRA: los lentes de Don Titular. | GPU (T4) |
