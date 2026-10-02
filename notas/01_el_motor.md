@@ -78,6 +78,10 @@ $$
 
 y $h$ no crece con $L$. Además, el gradiente que llega a $h_{t-L}$ es un producto de $L$ jacobianos; si sus normas son $<1$ se desvanece. Esa es la motivación de la atención: en vez de un vaso, **mirar directo** a cada posición pasada.
 
+**Lo que mide el notebook 02.** Con el mismo total de letras y el mismo número de pasos, la val loss queda en ~2.19 para $L=32,64,128,256$. La pérdida por posición baja de la letra 1–8 a la 9–32 y luego es plana: la letra 200 cuesta lo mismo que la 40. Lo que pasó hace más de ~30 letras no llega a la predicción.
+
+**La trampa.** Si entrenas el mismo número de *ventanas* para cada $L$, la de 256 lee 8× más letras y "gana" por eso. Un experimento justo cambia una sola cosa.
+
 ## 6. Atención y el Transformer causal
 
 **Dummy.** Cada posición hace una pregunta (query), cada posición pasada ofrece una etiqueta (key) y un contenido (value). Se mezclan los contenidos con pesos según qué tan bien contesta cada etiqueta a la pregunta.
@@ -125,7 +129,7 @@ $T\to 0$: greedy (argmax). $T=1$: la distribución aprendida. $T>1$: más plana.
 
 1. En `CharWindowDataset.__getitem__`: `y = self.data[idx + 1 : idx + self.seq_len + 1]`, o sea `x` recorrido una posición. El texto es su propia etiqueta: aprendizaje autosupervisado.
 2. Muy por debajo de $\ln 91\approx 4.51$ antes de entrenar: probablemente hay fuga (la etiqueta se coló en la entrada, p. ej. sin máscara o con un desfase mal hecho).
-3. (a) El estado $h$ tiene la misma dimensión: más contexto no cabe. (b) El gradiente hacia posiciones lejanas se desvanece. (Bonus: con `max_windows` fijo, ventanas más largas = menos ventanas distintas.)
+3. (a) El estado $h$ tiene la misma dimensión: más contexto no cabe. (b) El gradiente hacia posiciones lejanas se desvanece. (Bonus: si además bajaste el número de ventanas para igualar letras, también bajaste los pasos de gradiente; iguala las dos cosas antes de concluir.)
 4. La loss baja mucho (el modelo copia el siguiente carácter, que ve). Las muestras son basura porque al generar ese futuro no existe.
 5. Casi todo el peso se va al token más probable; los ciclos de alta probabilidad ("de la de la…") se vuelven atractores.
 
