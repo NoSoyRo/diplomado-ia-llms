@@ -92,6 +92,19 @@ Extensiones opcionales del enunciado (GRU vs Transformer, efecto de `seq_len`, t
 
 Extra (LaTeX, figuras de más, una sim, un segundo modelo) **no resta**.
 
+**Revisión automática (evidencia, no la nota):**
+
+```bash
+pip install -r ../requirements-dev.txt   # trae pypdf
+python ../scripts/revisar_reto.py <carpeta_de_tu_entrega>
+```
+
+Corre los checks verificables (estructura, tamaño del corpus, tokenización
+por carácter, arquitectura, entropía cruzada, semilla, texto extraíble del
+PDF, cruce perplejidad-vs-`resultados/`). Quien califique usa
+[`AGENTE_reto_llms.md`](AGENTE_reto_llms.md) para combinar esa evidencia con
+la rúbrica de abajo.
+
 ## Checklist antes de entregar
 
 - [ ] `corpus.txt` de 10–500 KB, que no es el Quijote, con origen en el PDF.

@@ -45,11 +45,11 @@ diplomado-ia-llms/
 ├── parte-2-chef/       04–05
 ├── parte-3-oficio/     06–08, rss_reportero.py, don_titular.py, sft_lora_noticias.py,
 │                       ejemplo-briefing.jsonl (44 filas), holdout.jsonl (10 días posteriores)
-├── reto/               enunciado, rúbrica (código + reporte.pdf) y checklist
+├── reto/               enunciado, rúbrica (código + reporte.pdf), checklist y AGENTE_reto_llms.md
 ├── SESIONES.md         8 sesiones: una actividad y un entregable por notebook
 ├── datos/quijote.txt   corpus de la Parte I y II (~2M caracteres)
 ├── pdfs/               PDFs históricos del temario (las notas vivas son el ebook)
-├── scripts/            run_notebooks.py (CI), generar_referencia.py (salidas guardadas del 08)
+├── scripts/            run_notebooks.py (CI), generar_referencia.py, revisar_reto.py (evidencia del reto)
 └── tests/              pytest del reportero y del juez (corre en CI)
 ```
 
