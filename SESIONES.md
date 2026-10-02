@@ -28,8 +28,8 @@ Las sesiones 1–3 construyen el reto. Las 4–8 muestran lo mismo en un LLM de 
 ## 2 · El experimento justo
 
 - **Votación (5 min).** "¿L=256 le gana a L=32?" Se anota el resultado de la votación.
-- **Versión ingenua (10 min).** `letras_por_epoca = 4000 * L`: L=256 "gana".
-- **Versión justa (10 min).** Mismas letras, mismos pasos: empatan. La curva por posición se aplana en ~30 letras.
+- **Versión ingenua (10 min).** `igualar_presupuesto = False` y vuelven a correr: 4 000 ventanas y batch fijo. L=256 lee 8× más letras y "gana".
+- **Versión justa (10 min).** `igualar_presupuesto = True` (lo que ya trae el notebook). Mismas letras, mismos pasos: empatan. La curva por posición se aplana en ~30 letras.
 - **Discusión.** ¿Qué cambió entre las dos? Un experimento justo cambia una sola cosa.
 - **Entregable.** Las dos tablas y una frase sobre la trampa.
 - **Tarea para el reto.** Correr el 01 con **su** corpus.

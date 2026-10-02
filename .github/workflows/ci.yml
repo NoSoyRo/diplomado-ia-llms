@@ -17,5 +17,5 @@ jobs:
       - run: ruff check .
       - run: pytest -q
       - run: python parte-3-oficio/don_titular.py parte-3-oficio/ejemplo-briefing.jsonl
-      - name: notebooks sin torch (04, 06, 07)
+      - name: notebooks sin torch (04, 06, 08)
         run: python scripts/run_notebooks.py

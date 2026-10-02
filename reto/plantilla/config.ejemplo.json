@@ -1,0 +1,13 @@
+{
+  "seed": 0,
+  "model": "gru",
+  "corpus": "corpus.txt",
+  "lr": 0.0003,
+  "epochs": 3,
+  "seq_len": 64,
+  "hidden": 128,
+  "batch_size": 32,
+  "prompt": "escribe aquí el prompt fijo",
+  "temperaturas": [0.7, 1.0, 1.2],
+  "max_new_tokens": 400
+}

@@ -21,6 +21,8 @@ mi-mini-llm/
 └── reporte.pdf         lo que se califica junto con el código
 ```
 
+Los nombres exactos (`config.json`, `resultados/historia.json` con listas `train_loss` y `val_loss`) están en [`plantilla/`](plantilla/README.md). El revisor automático los busca así.
+
 ## Requisitos (del enunciado oficial)
 
 | # | Requisito | En el código | En el PDF |

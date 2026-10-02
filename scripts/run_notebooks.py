@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Ejecuta notebooks de punta a punta (cada uno desde su carpeta).
 
-Por defecto corre los que no necesitan torch, GPU ni red: 04, 06, 07.
+Por defecto corre los que no necesitan torch, GPU ni red: 04, 06, 08.
 Si una celda truena, el script truena: así CI detecta un notebook roto.
 
     python scripts/run_notebooks.py                       # los de CI
