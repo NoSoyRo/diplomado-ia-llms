@@ -90,7 +90,8 @@ class Bullet:
 
     @property
     def no_aparece(self) -> bool:
-        return "no aparece" in normalizar(self.texto)
+        """Solo si el bullet entero es 'no aparece'. 'gratuita (no aparece)' sigue siendo un hecho."""
+        return normalizar(self.texto).strip(" .") == "no aparece"
 
 
 @dataclass
@@ -101,11 +102,17 @@ class Juicio:
     soportados: int
     con_hechos: int
     problemas: list[str] = field(default_factory=list)
+    citados: int = 0
 
     @property
     def soporte(self) -> float | None:
         """Fracción de bullets con hechos que tienen soporte. None si no hubo ninguno que medir."""
         return self.soportados / self.con_hechos if self.con_hechos else None
+
+    @property
+    def citas(self) -> float | None:
+        """Fracción de bullets con hechos que citan un medio de las notas. None si no hubo ninguno."""
+        return self.citados / self.con_hechos if self.con_hechos else None
 
     @property
     def aprobado(self) -> bool:
@@ -215,7 +222,14 @@ def juzgar(notas: str, briefing: str) -> Juicio:
     elif not formato_ok:
         problemas.append(f"formato: se esperaban bullets 1..{N_BULLETS}, llegaron {[b.numero for b in bullets]}")
 
-    citas_ok, soportados, con_hechos = True, 0, 0
+    vistos: set[str] = set()
+    for b in bullets:
+        clave = normalizar(b.texto).strip(" .")
+        if clave in vistos and not b.no_aparece:
+            problemas.append(f"bullet {b.numero}: repite un bullet anterior")
+        vistos.add(clave)
+
+    citas_ok, soportados, con_hechos, citados = True, 0, 0, 0
     for b in bullets:
         if b.no_aparece:
             continue
@@ -227,6 +241,8 @@ def juzgar(notas: str, briefing: str) -> Juicio:
         elif medios and normalizar(b.medio) not in medios:
             citas_ok = False
             problemas.append(f"{quien}: cita '{b.medio}', que no está en las notas")
+        else:
+            citados += 1
         frac, inventados = soporte_bullet(b, notas)
         if inventados:
             problemas.append(f"{quien}: números que no están en las notas {sorted(inventados)}")
@@ -235,7 +251,7 @@ def juzgar(notas: str, briefing: str) -> Juicio:
         else:
             soportados += 1
 
-    return Juicio(bullets, formato_ok, citas_ok, soportados, con_hechos, problemas)
+    return Juicio(bullets, formato_ok, citas_ok, soportados, con_hechos, problemas, citados)
 
 
 def mensajes(notas: str, briefing: str | None = None, system: str = SYSTEM) -> list[dict[str, str]]:

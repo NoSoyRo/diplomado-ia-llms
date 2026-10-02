@@ -1,6 +1,6 @@
 # Parte III (LoRA). GPU recomendada (Colab T4). bitsandbytes solo para --4bit en CUDA.
 -r requirements.txt
 peft>=0.12
-trl>=0.12
+trl>=0.20
 datasets>=2.20
 bitsandbytes>=0.43; platform_system == "Linux"

@@ -23,7 +23,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 SIN_TORCH = [
     "parte-2-chef/04_bpe_a_mano.ipynb",
     "parte-3-oficio/06_reportero_y_dataset.ipynb",
-    "parte-3-oficio/07_juicio_antes_despues.ipynb",
+    "parte-3-oficio/08_juicio_antes_despues.ipynb",
 ]
 
 

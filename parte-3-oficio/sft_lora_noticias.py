@@ -35,16 +35,18 @@ del assistant y 0 si es system/user:
     L_SFT(θ) = - 1/(Σ m_t)  Σ_t m_t log P_θ(x_t | x_<t)
 
 El enunciado (las notas) no se "practica": es contexto. El modelo
-practica a escribir el briefing. TRL aplica esa máscara al formato
-`messages` del JSONL. DPO/RLHF reponderan después con y⁺ ≻ y⁻; no
+practica a escribir el briefing. Ojo: con filas `messages`, TRL calcula
+la pérdida sobre TODOS los tokens. Por eso el script parte cada fila en
+`prompt` (system + user) y `completion` (assistant): en ese formato TRL
+pone m_t = 0 en el prompt. DPO/RLHF reponderan después con y⁺ ≻ y⁻; no
 entran a este lab.
 
 Regla de oro
 ------------
 Si el assistant menciona algo que no está en el user, se tira el ejemplo.
-Anti-alucinación con datos, no con un sermón. Este JSONL tiene 3 filas
-(plantilla). Sustitúyelo por 200+ revisados. Con 3 filas y test_size=0.1
-el eval es de juguete: el script avisa.
+Anti-alucinación con datos, no con un sermón. Este JSONL trae 44 filas
+que pasan `don_titular.py`: alcanza para ver el efecto, no para producción.
+Para el reto: 100+ de tu oficio, revisadas a mano.
 
     pip install "transformers>=4.45" peft trl datasets accelerate
     # GPU 4-bit (Colab T4):
@@ -56,6 +58,7 @@ el eval es de juguete: el script avisa.
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 import torch
@@ -81,6 +84,14 @@ def parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
+def a_prompt_completion(fila: dict) -> dict:
+    """messages = [system, user, assistant] → prompt = [system, user], completion = [assistant]."""
+    msgs = fila["messages"]
+    if msgs[-1]["role"] != "assistant":
+        raise ValueError("cada fila debe terminar en un mensaje del assistant")
+    return {"prompt": msgs[:-1], "completion": msgs[-1:]}
+
+
 def main() -> None:
     args = parse_args()
     data_path = Path(args.data)
@@ -103,7 +114,9 @@ def main() -> None:
         model_kwargs["torch_dtype"] = torch.bfloat16
 
     model = AutoModelForCausalLM.from_pretrained(args.model, **model_kwargs)
-    ds = load_dataset("json", data_files=str(data_path), split="train")
+    ds = load_dataset("json", data_files=str(data_path), split="train").map(
+        a_prompt_completion, remove_columns=["messages"]
+    )
     n = len(ds)
     if n < 20:
         print(
@@ -155,6 +168,17 @@ def main() -> None:
     trainer.train()
     trainer.save_model(args.out)
     tokenizer.save_pretrained(args.out)
+    registro = {
+        "model_id": args.model,
+        "data": str(data_path),
+        "n_filas": n,
+        "epochs": args.epochs,
+        "lr": args.lr,
+        "seed": args.seed,
+        "batch_efectivo": args.bs * args.accum,
+        "qlora_4bit": args.fourbit,
+    }
+    (Path(args.out) / "entrenamiento.json").write_text(json.dumps(registro, indent=2) + "\n", encoding="utf-8")
     print(f"Adapter en {args.out}/  — esto son los lentes, no el cerebro.")
 
 

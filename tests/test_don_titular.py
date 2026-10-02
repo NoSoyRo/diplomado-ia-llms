@@ -59,7 +59,9 @@ def test_medio_que_no_esta_en_notas():
 
 def test_bullet_sin_cita():
     malo = BUENO.replace("Banxico (El País):", "Banxico:")
-    assert "bullet 1: no cita medio" in dt.juzgar(NOTAS, malo).problemas
+    j = dt.juzgar(NOTAS, malo)
+    assert "bullet 1: no cita medio" in j.problemas
+    assert j.citados == 2 and abs(j.citas - 2 / 3) < 1e-9
 
 
 def test_formato_cuatro_bullets():
@@ -99,13 +101,25 @@ def test_frase_añadida_baja_el_soporte():
     assert any("soporte" in p for p in dt.juzgar(NOTAS, salida).problemas)
 
 
+def test_hecho_con_no_aparece_entre_parentesis_sigue_siendo_hecho():
+    malo = BUENO.replace("4) Política nacional: no aparece.", "4) Bellas Artes: muestra gratuita (no aparece)")
+    j = dt.juzgar(NOTAS, malo)
+    assert j.con_hechos == 4 and "bullet 4: no cita medio" in j.problemas
+
+
+def test_bullet_repetido():
+    lineas = BUENO.splitlines()
+    malo = "\n".join([*lineas[:3], lineas[0].replace("1)", "4)"), lineas[4]])
+    assert "bullet 4: repite un bullet anterior" in dt.juzgar(NOTAS, malo).problemas
+
+
 def test_normalizar_quita_acentos_pero_no_la_enie():
     assert dt.normalizar("Inflación AÑO") == "inflacion año"
 
 
 def test_dataset_de_ejemplo_pasa_la_regla_de_oro():
     total, tirados = dt.validar_jsonl(DATASET)
-    assert total == 3 and tirados == []
+    assert total >= 40 and tirados == []
 
 
 def test_validar_ejemplo_sin_assistant():

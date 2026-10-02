@@ -3,28 +3,74 @@
     "modelo": "Qwen/Qwen2.5-0.5B-Instruct",
     "decodificacion": "greedy",
     "max_new_tokens": 220,
-    "fecha": "2026-10-02"
+    "fecha": "2026-10-02",
+    "lora": {
+      "r": 16,
+      "lora_alpha": 32,
+      "target_modules": [
+        "q_proj",
+        "v_proj"
+      ],
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "data": "ejemplo-briefing.jsonl",
+      "n_filas": 44,
+      "epochs": 8.0,
+      "lr": 0.0002,
+      "seed": 42,
+      "batch_efectivo": 8,
+      "qlora_4bit": false
+    }
   },
   "salidas": {
     "h1-economia": {
       "zero-shot": "**Resumen:**\n- **Economía**: El peso cerró la semana en 18.40 dólares por dólar, con la expectativa de recortes de la Fed.\n- **Expansión**: Pemex reportó una pérdida trimestral menor a la esperada.\n- **La República**: La inflación de la primera quincena subió a 4.1%, lo que es menos que la prevista.\n\n**Medio:** El Economista, Expansión, El País",
-      "few-shot": "1) El Economista: 18.40 por dólar.\n2) Expansión: pérdida trimestral menor a la esperada.\n3) El País: inflación de la primera quincena sube a 4.1%."
+      "few-shot": "1) El Economista: 18.40 por dólar.\n2) Expansión: pérdida trimestral menor a la esperada.\n3) El País: inflación de la primera quincena sube a 4.1%.",
+      "lora": "1) peso (El Economista): 18.40 por dólar; analistas: recortes de la Fed.\n2) pemex: pérdida trimestral menor a la esperada.\n3) inflación: 4.1% (El País).\n4) otros: no aparece.\n5) temática: no aparece."
     },
     "h2-clima": {
       "zero-shot": "Conagua: Tormenta tropical Ileana se formará frente a Guerrero, con lluvias intensas en la costa durante 48 horas.\n\nLocal: Suspenden clases en 12 municipios de Oaxaca por lluvias.",
-      "few-shot": "1) Conagua (Conagua): torrenta tropical Ileana se formará.\n   Se espera lluvias intensas en la costa durante 48 horas.\n2) Oaxaca (Local): suspenden clases en 12 municipios."
+      "few-shot": "1) Conagua (Conagua): torrenta tropical Ileana se formará.\n   Se espera lluvias intensas en la costa durante 48 horas.\n2) Oaxaca (Local): suspenden clases en 12 municipios.",
+      "lora": "1) Conagua (mezcla): tormento tropical Ileana; lluvias intensas en Guerrero.\n2) Economía: suspenden clases en 12 municipios de Oaxaca por lluvias.\n3) Deportes: no aparece.\n4) Ciencia: no aparece.\n5) Política: no aparece."
     },
     "h3-deportes": {
       "zero-shot": "**Resumen:**\n- **ESPN**: Los Pumas derrotan al Cruz Azul en el Olímpico Universitario, logrando su victoria en la fecha 2026 de la Liga MX.\n- **Marca**: El Tri convoca a 26 jugadores para la fecha FIFA, incluyendo un portero recuperado tras una lesión.\n- **Récords**: La Liga MX anuncia el horario de la jornada 8, con el objetivo de mejorar la organización y la eficiencia de los partidos.\n\n**Medio:** ESPN, marca y Récords",
-      "few-shot": "1) ESPN (ESPN): Pumas vence 2-0 a Cruz Azul en el Olímpico Universitario.\n2) Marca (Marca): El Tri convoca a 26 jugadores para la fecha FIFA.\n   Regresa un portero tras lesión.\n3) Récords (Récord): La Liga MX anuncia horario de la jornada 8."
+      "few-shot": "1) ESPN (ESPN): Pumas vence 2-0 a Cruz Azul en el Olímpico Universitario.\n2) Marca (Marca): El Tri convoca a 26 jugadores para la fecha FIFA.\n   Regresa un portero tras lesión.\n3) Récords (Récord): La Liga MX anuncia horario de la jornada 8.",
+      "lora": "1) Pumas (ESPN): vence 2-0 a Cruz Azul en el Olímpico Universitario.\n2) Porteros (Marca): regresa un portero tras lesión.\n3) Liga MX: anuncia horario de la jornada 8.\n4) Economía: no aparece.\n5) Deportes: no aparece."
     },
     "h4-movilidad": {
       "zero-shot": "**Resumen del 2026-08-23**\n\n1. **Local**: La reforma se cerrará a las 10:00 horas, con opciones para los Insurgentes y Circuito Interior.\n\n2. **Metro CDMX**: La Línea 3 se retrasará por una marcha lenta debido a la revisión de vías.\n\n3. **El Universal**: El nuevo Ecobici ha sumado 150 ciclos de estación nuevas.",
-      "few-shot": "1) Metro CDMX: cierre por marcha a partir de las 10:00.\n2) Reforma: se recomienda Insurgentes y Circuito Interior.\n3) Metro CDMX: marcha lenta en la Línea 3.\n4) El Universal: ecobici suma 150 cicloestaciones nuevas."
+      "few-shot": "1) Metro CDMX: cierre por marcha a partir de las 10:00.\n2) Reforma: se recomienda Insurgentes y Circuito Interior.\n3) Metro CDMX: marcha lenta en la Línea 3.\n4) El Universal: ecobici suma 150 cicloestaciones nuevas.",
+      "lora": "1) Reforma (Local): cierre por marcha a partir de las 10:00; se recomienda Insurgentes y Circuito Interior.\n2) Metro: lenta en Línea 3 con revisión de vías.\n3) Ecobici: suma 150 cicloestaciones nuevas.\n4) Economía: no aparece.\n5) Deportes: no aparece."
     },
     "h5-unam": {
       "zero-shot": "**Resumen:**\n- **Gaceta UNAM**: Arranca el semestre 2027-1 con 360 mil estudiantes.\n- **La Jornada**: La Facultad de Ingeniería abrió un diplomado de IA.\n\n**Citas:**  \n- **Gaceta UNAM**: \"Arranca el semestre 2027-1 con 360 mil alumnos.\"\n- **La Jornada**: \"La Facultad de Ingeniería abre un diplomado de IA.\"",
-      "few-shot": "1) Gaceta UNAM: arranca semestre 2027-1 con 360 mil estudiantes.\n2) La Jornada: abre un diplomado de IA."
+      "few-shot": "1) Gaceta UNAM: arranca semestre 2027-1 con 360 mil estudiantes.\n2) La Jornada: abre un diplomado de IA.",
+      "lora": "1) Gaceta UNAM (arranca semestre 2027-1): 360 mil alumnos.\n2) La Jornada (diplomado de IA): Facultad de Ingeniería.\n3) Economía: no aparece.\n4) Deportes: no aparece.\n5) Turismo: no aparece."
+    },
+    "h6-salud": {
+      "zero-shot": "**Resumen:**\n- **Milenio:** La Secretaría de Salud confirmó 1,200 casos de dengue en Veracruz, principalmente leve.\n- **El Universal:** Inicia la campaña de vacunación contra influenza en octubre.\n\n**Medios:** no aparece",
+      "few-shot": "1) Secretaría de Salud (Milenio): confirmó 1,200 casos de dengue.\n2) El Universal: arranca campaña de vacunación contra influenza.",
+      "lora": "1) Drogas: 1,200 casos de dengue (Milenio).\n2) Economía: arranca campaña de vacunación contra influenza (El Universal).\n3) Política: no aparece.\n4) Deportes: no aparece.\n5) Ciencia: no aparece."
+    },
+    "h7-cultura": {
+      "zero-shot": "La Jornada - El Palacio de Bellas Artes ofrece una muestra gratuita de Leonora Carrington.\nCineteca Nacional - Anuncia ciclo de cine coreano para fines de semana.\nEl Vive Latino - Cartel 2027 revelado, incluyendo temas latinoamericanos y contemporáneos.",
+      "few-shot": "1) La Jornada: muestra gratuita los domingos.\n2) Excélsior: ciclo de cine coreano.\n3) Reforma: cartel 2027.",
+      "lora": "1) Leonora Carrington (La Jornada): muestra en el Palacio de Bellas Artes; gratuita los domingos.\n2) Cine coreano (Excélsior): ciclo de cine coreano;\n3) Víctimas (Reforma): cartel 2027;\n4) Economía: no aparece;\n5) Deportes: no aparece."
+    },
+    "h8-tecnologia": {
+      "zero-shot": "Expansión: Un nuevo chip de la empresa de chips abre una planta en Jalisco con 800 empleos.\n\nEl Economista: El Instituto Federal de Telecomunicaciones (IFT) asigna un espacio para redes 5G en México.\n\nSubasta: La subasta de redes 5G recaudó 2 mil millones de pesos.",
+      "few-shot": "1) Expansión (Expansión): una empresa de chips abre planta.\n2) IFT (El Economista): asigna espectro para redes 5G.",
+      "lora": "1) Chips (Expansión): una empresa de chips abre planta en Jalisco con 800 empleos.\n2) Subasta (El Economista): la subasta recaudó 2 mil millones de pesos.\n3) 5G: no aparece.\n4) México: no aparece.\n5) Economía: no aparece."
+    },
+    "h9-sismo": {
+      "zero-shot": "**Resumen:**\n- **Sismo de Magnitud 6.0**: En Michoacán, México, un sismo de este nivel se sintió en la Ciudad de México, causando daño leve y sin afectar la normalidad del servicio público metro.\n\n**Metro CDMX:** El Metro CDMX ha revisado sus instalaciones tras el sismo, con el servicio reanudado en aproximadamente 20 minutos.",
+      "few-shot": "1) Sismo de 6.0 en Michoacán: se sintió en la CDMX; no reportan daños graves.\n2) Metro CDMX: revisa instalaciones tras el sismo; servicio reanuda en 20 minutos.",
+      "lora": "1) Sismo (SSN): magnitud 6.0 en Michoacán; no se reportan daños graves.\n2) Metro: revisa instalaciones tras el sismo; el servicio se reanudó en 20 minutos.\n3) Economía: no aparece.\n4) Deportes: no aparece.\n5) Política: no aparece."
+    },
+    "h10-mixto": {
+      "zero-shot": "**Resumen:**\nEl Financiero presenta una inflación anual de 3.7% en 2026, mientras que Conagua reporta lluvias fuertes en Chiapas y Tabasco. En la jornada de Viaducto, Toluca logra un empate con Pumas, mientras que en el ámbito universitario, el Cierre Parcial en Viaducto es anunciado por la UNAM para la Olimpiada de Matemáticas.",
+      "few-shot": "1) El Financiero: inflación 3.7%.\n2) Conagua: lluvias fuertes en Chiapas y Tabasco.\n3) ESPN: Toluca vence a Pumas.\n4) Local: cierre parcial en Viaducto.\n5) Gaceta UNAM: abre registro a Olimpíada Matemática.",
+      "lora": "1) Inflación (El Financiero): 3.7%.\n2) Lluvias (Conagua): Chiapas y Tabasco.\n3) Viaducto (ESPN): cierre parcial.\n4) Olimpíada (Local): viaducto.\n5) Matemática (Gaceta UNAM): la UNAM abre registro."
     }
   }
 }
