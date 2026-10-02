@@ -28,8 +28,8 @@ Cada notebook sigue la misma receta: **intuición dummy** → **una fórmula** �
 | 05 | [`05_chat_template_y_villano.ipynb`](parte-2-chef/05_chat_template_y_villano.ipynb) | Qwen real: base vs instruct, chat template, el villano que inventa el día. | CPU (~1 min, baja 2 GB) / Colab |
 | | **[Parte III · El oficio](parte-3-oficio/)** | | |
 | 06 | [`06_reportero_y_dataset.ipynb`](parte-3-oficio/06_reportero_y_dataset.ipynb) | RSS → notas → filas de chat. La regla de oro tira ejemplos. | CPU, sin torch |
-| — | [`sft_lora_noticias.py`](parte-3-oficio/sft_lora_noticias.py) | SFT + LoRA: los lentes de Don Titular. | GPU (T4) |
-| 07 | [`07_juicio_antes_despues.ipynb`](parte-3-oficio/07_juicio_antes_despues.ipynb) | Tabla antes vs después con un juez reproducible. | CPU, sin torch |
+| 07 | [`07_gym_lora.ipynb`](parte-3-oficio/07_gym_lora.ipynb) | El gym: SFT + LoRA de verdad, curva train/val, con lentes vs sin lentes. | Colab T4 (~2 min) / MPS |
+| 08 | [`08_juicio_antes_despues.ipynb`](parte-3-oficio/08_juicio_antes_despues.ipynb) | Tabla zero-shot vs few-shot vs LoRA en 10 prompts de hold-out, con juez reproducible. | CPU, sin torch |
 | | **[Reto](reto/)** | Tu oficio, no el nuestro. Checklist de entrega. | |
 
 Extras de la Parte I (temario viejo, opcionales): [`parte-1-motor/extra/`](parte-1-motor/extra/) — grid de hiperparámetros, scaling, memoria/VRAM.
@@ -41,10 +41,12 @@ diplomado-ia-llms/
 ├── notas/              apuntes por parte + fórmulas + glosario
 ├── parte-1-motor/      01–03 (+ extra/ E1–E3)
 ├── parte-2-chef/       04–05
-├── parte-3-oficio/     06–07, rss_reportero.py, don_titular.py, sft_lora_noticias.py, ejemplo-briefing.jsonl
+├── parte-3-oficio/     06–08, rss_reportero.py, don_titular.py, sft_lora_noticias.py,
+│                       ejemplo-briefing.jsonl (44 filas), holdout.jsonl (10 días posteriores)
 ├── reto/               enunciado y checklist del reto final
 ├── datos/quijote.txt   corpus de la Parte I y II (~2M caracteres)
 ├── pdfs/               PDFs históricos del temario (las notas vivas son el ebook)
+├── scripts/            run_notebooks.py (CI), generar_referencia.py (salidas guardadas del 08)
 └── tests/              pytest del reportero y del juez (corre en CI)
 ```
 
@@ -68,6 +70,6 @@ Colab solo baja el notebook. La primera celda de código trae comentados el `%pi
 ```bash
 pip install -r requirements-dev.txt
 pytest -q                                   # juez + reportero
-python scripts/run_notebooks.py             # ejecuta 04, 06, 07 (sin red ni GPU)
+python scripts/run_notebooks.py             # ejecuta 04, 06, 08 (sin red ni GPU)
 python parte-3-oficio/don_titular.py parte-3-oficio/ejemplo-briefing.jsonl
 ```

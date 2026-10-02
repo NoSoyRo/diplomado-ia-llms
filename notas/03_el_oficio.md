@@ -1,6 +1,6 @@
 # 03 · El oficio: noticiero de las 7 am
 
-Notebooks y scripts: [`06_reportero_y_dataset`](../parte-3-oficio/06_reportero_y_dataset.ipynb) · [`sft_lora_noticias.py`](../parte-3-oficio/sft_lora_noticias.py) · [`07_juicio_antes_despues`](../parte-3-oficio/07_juicio_antes_despues.ipynb) · [`don_titular.py`](../parte-3-oficio/don_titular.py)
+Notebooks y scripts: [`06_reportero_y_dataset`](../parte-3-oficio/06_reportero_y_dataset.ipynb) · [`07_gym_lora`](../parte-3-oficio/07_gym_lora.ipynb) · [`08_juicio_antes_despues`](../parte-3-oficio/08_juicio_antes_despues.ipynb) · [`sft_lora_noticias.py`](../parte-3-oficio/sft_lora_noticias.py) · [`don_titular.py`](../parte-3-oficio/don_titular.py)
 
 ## Idea en una frase
 
@@ -33,21 +33,21 @@ El día lo trae un script (reportero), el oficio lo aprende un parche barato (Lo
 
 **Hold-out por fecha.** Si el mismo día está en train y en prueba, el modelo ya vio esas notas. Separa por fecha, no al azar.
 
-**Cuánto.** La plantilla trae 3 filas. El gym pide 200+; el reto, 100+ de **tu** oficio. Incluye filas con "no aparece": si nunca lo practica, nunca lo dice.
+**Cuánto.** El ejemplo trae 44 filas: basta para que el LoRA aprenda el formato, no para que cite siempre (sección 6). El reto pide 100+ de **tu** oficio. Incluye filas con "no aparece": si nunca lo practica, nunca lo dice.
 
 ## 3. El juez (`don_titular.py`)
 
 Tres indicadores, sin IA:
 
 - **Formato**: bullets `1) … 5)`.
-- **Citas**: cada hecho cita un medio que está en las notas.
+- **Citas**: cada hecho cita un medio que está en las notas (se reporta como fracción de bullets bien citados).
 - **Soporte**: con $S(\cdot)$ = raíces de palabras de contenido y $N(\cdot)$ = números,
 
 $$
 \mathrm{soporte}(b,d) = \frac{|S(b)\cap S(d)|}{|S(b)|}\ \ge\ 0.5 \quad\text{y}\quad N(b)\subseteq N(d).
 $$
 
-**Lo que no ve.** "Banxico *baja* la tasa" usa las mismas palabras que "mantiene la tasa": pasa. Atribuir un hecho al medio equivocado: pasa si el medio está en las notas. El juez filtra lo obvio a escala; tú lees lo sutil.
+**Lo que no ve.** "Banxico *baja* la tasa" usa las mismas palabras que "mantiene la tasa": pasa. Atribuir un hecho al medio equivocado: pasa si el medio está en las notas. Un "Deportes: no aparece" en un día con tres notas de deportes: pasa. El juez filtra lo obvio a escala; tú lees lo sutil.
 
 ## 4. LoRA: lentes, no cirugía
 
@@ -75,7 +75,7 @@ Contra 494 032 768 parámetros del modelo: **0.22%**. El adapter pesa unos MB, n
 
 ## 5. SFT: next-token solo del assistant
 
-**Dummy.** Es el mismo juego del notebook 01, pero el modelo solo paga por equivocarse en el briefing. Las notas son contexto: se leen, no se practican.
+**Dummy.** Es el mismo juego del notebook 01, pero el modelo solo paga por equivocarse en el briefing. Las notas son contexto: se leen, no se practican. En TRL eso se logra pasando cada fila como `prompt` / `completion`; con `messages` crudos la pérdida cubre todo.
 
 **Matemática.**
 
@@ -85,17 +85,26 @@ $$
 
 En la fila de ejemplo, $m_t=1$ en ~34% de los caracteres (notebook 06).
 
-**Batch efectivo.** $B_{\text{eff}} = B_{\text{micro}}\times G$ (acumulación de gradiente). El script usa $2\times 8=16$.
+**Batch efectivo.** $B_{\text{eff}} = B_{\text{micro}}\times G$ (acumulación de gradiente). El script usa $2\times 8=16$ por defecto; con 44 filas el notebook 07 baja a $2\times 4=8$ y sube a 8 épocas para que haya suficientes pasos (~40).
 
 ## 6. El juicio: antes vs después
 
-**Condiciones** (notebook 07): `zero-shot` (system + notas), `few-shot` (+ un ejemplo resuelto en el prompt), `lora` (tu adapter).
+**Condiciones** (notebook 08): `zero-shot` (system + notas), `few-shot` (+ un ejemplo resuelto en el prompt), `lora` (system + notas, con el adapter del 07).
 
-**Lo que dio la corrida guardada** (Qwen2.5-0.5B-Instruct, greedy, 5 prompts): formato 0% en las dos condiciones sin entrenar; citas 40%; soporte 95% vs 100%. El modelo **lee** bien las notas; lo que no tiene es el oficio.
+**Lo que dio la corrida guardada** (Qwen2.5-0.5B-Instruct, greedy, 10 prompts de hold-out; LoRA r=16, 44 filas, 8 épocas):
+
+| | zero-shot | few-shot | lora |
+|---|---|---|---|
+| formato (5 bullets) | 0/10 | 1/10 | **10/10** |
+| bullets bien citados | 15/28 | 8/28 | 15/28 |
+| soporte medio | 89% | 100% | 100% |
+| problemas del juez | 26 | 29 | **13** |
+
+El modelo **lee** bien las notas en las tres condiciones. El LoRA aprendió la **forma** (lo que ningún prompt logró) y no el hábito de citar: con 44 filas, SFT enseña primero el formato.
 
 **Tu LoRA tiene que ganarle a few-shot.** Si no le gana, un prompt con un ejemplo era más barato.
 
-**Goodhart.** Si optimizas para el juez, el modelo aprende a copiar títulos: formato perfecto, soporte 100%, cero resumen. La columna humana existe por eso.
+**Goodhart.** Si optimizas para el juez, el modelo aprende a satisfacerlo. En la corrida guardada, el LoRA saca **0 problemas** en h10 y escribe "Viaducto (ESPN): cierre parcial" (el cierre era de *Local*): medios reales, palabras reales, atribución rota. La columna humana existe por eso.
 
 ---
 

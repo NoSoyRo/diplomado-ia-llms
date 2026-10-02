@@ -6,7 +6,7 @@ Resumen para repasar **después** de correr cada notebook. El ebook explica con 
 |---|---|---|
 | [`01_el_motor.md`](01_el_motor.md) | 01 · 02 · 03 | Un LLM apuesta el siguiente token; la etiqueta es el texto recorrido un lugar. |
 | [`02_el_chef.md`](02_el_chef.md) | 04 · 05 | El modelo real ya existe; se le habla con su tokenizer y su chat template, y sin notas inventa el día. |
-| [`03_el_oficio.md`](03_el_oficio.md) | 06 · 07 · `sft_lora_noticias.py` | El día lo trae el reportero, el oficio lo enseñan los lentes (LoRA), y un juez lo comprueba. |
+| [`03_el_oficio.md`](03_el_oficio.md) | 06 · 07 · 08 · `sft_lora_noticias.py` | El día lo trae el reportero, el oficio lo enseñan los lentes (LoRA), y un juez lo comprueba. |
 | [`formulas.md`](formulas.md) | todos | Las 12 fórmulas del módulo en una hoja. |
 | [`glosario.md`](glosario.md) | todos | Términos en español ↔ inglés, con la definición que usamos aquí. |
 

@@ -25,10 +25,10 @@ PDF histórico del enunciado: [`pdfs/05_02_RetoLLM.pdf`](../pdfs/05_02_RetoLLM.p
 | Pieza | Qué entregar | Material de apoyo |
 |---|---|---|
 | **Motor** | Lab 0 o mini-GPT: curvas train/val, 3 temperaturas, y en el código la flecha "aquí está la etiqueta". Corpus documentado. | `parte-1-motor/01`, `03` |
-| **Lentes** | Base open-weight ≤ 1.7 B (Qwen2.5-0.5B, SmolLM2-360M/1.7B, Llama-3.2-1B…). LoRA o QLoRA. Adapter + `adapter_config.json` + `r`, `lr`, épocas, semilla, `model_id`. | `parte-3-oficio/sft_lora_noticias.py` |
+| **Lentes** | Base open-weight ≤ 1.7 B (Qwen2.5-0.5B, SmolLM2-360M/1.7B, Llama-3.2-1B…). LoRA o QLoRA. Adapter + `adapter_config.json` + `entrenamiento.json` (`r`, `lr`, épocas, semilla, `model_id`). | `parte-3-oficio/07_gym_lora.ipynb` |
 | **Dataset** | JSONL de chat propio, **≥ 100** filas revisadas a mano. Regla de oro aplicada: cuántas tiraste y por qué. | `parte-3-oficio/06`, `don_titular.py` |
 | **Reportero** | Script que trae los datos frescos. Documenta origen, fecha y qué pasa si la fuente está caída. Sin papel, el sistema se niega o avisa — no inventa. | `parte-3-oficio/rss_reportero.py` |
-| **Juicio** | Tabla antes vs después en ≥ 5 prompts de hold-out separados por fecha: `zero-shot`, `few-shot`, `lora`, más tu columna humana. | `parte-3-oficio/07` |
+| **Juicio** | Tabla antes vs después en ≥ 5 prompts de hold-out separados por fecha: `zero-shot`, `few-shot`, `lora`, más tu columna humana. | `parte-3-oficio/08` |
 
 ## Demo de 8 minutos
 
