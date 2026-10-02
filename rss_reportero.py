@@ -1,10 +1,37 @@
 #!/usr/bin/env python3
 """Reportero del noticiero — cero IA.
 
-Baja un RSS público y arma el bloque de notas que luego pegas al LLM.
-Si este script falla, el noticiero falla: no es culpa de Qwen.
+Dummy
+-----
+Un LLM no "sabe el día". Si le preguntas qué pasó hoy sin notas, inventa
+(el villano del módulo). Este script es el reportero: baja un RSS público
+y arma el bloque de notas que luego pegas al modelo. Cero inteligencia
+artificial. Si esto falla, el noticiero falla — y no es culpa de Qwen.
 
-Uso:
+Arquitectura del producto (no se borra del pizarrón)::
+
+    [RSS / API]  →  paquete de notas de HOY  →  LLM (+ LoRA)  →  briefing
+     reportero            el papel                  conductor
+
+¿Dónde está "el día"? En el XML. ¿Dónde está "el estilo"? En el LLM.
+
+Math (RAG casero)
+-----------------
+Un retriever R (aquí: parsear el feed) produce documentos d = R(q).
+Se genera
+
+    ŷ ~ P_θ( · | φ(system, q, d) )
+
+es decir P(y | q, d) en vez de P(y | q). φ es el chat template. No hace
+falta un vector database el día 1: un string d basta. Si el feed viene
+vacío, d está vacío y no hay noticiero. Eso es un fallo observable.
+
+`--n` es el máximo de notas que *sobreviven* al filtro `--query`, no las
+primeras n del XML. Si filtraras después de recortar, `--query economia`
+podría devolver vacío aunque más abajo hubiera economía.
+
+Uso
+---
     python rss_reportero.py
     python rss_reportero.py --feed https://feeds.bbci.co.uk/mundo/rss.xml --n 8
     python rss_reportero.py --query economia
@@ -49,10 +76,11 @@ def parse_items(xml_bytes: bytes) -> list[dict[str, str]]:
     return items
 
 
-def format_notes(items: list[dict[str, str]], query: str | None) -> str:
+def format_notes(items: list[dict[str, str]], query: str | None, limit: int) -> str:
     if query:
         q = query.lower()
         items = [it for it in items if q in (it["title"] + " " + it["desc"]).lower()]
+    items = items[: max(1, limit)]
     lines = [f"Notas del {date.today().isoformat()}:"]
     for i, it in enumerate(items, 1):
         snippet = it["desc"][:220]
@@ -69,7 +97,7 @@ def format_notes(items: list[dict[str, str]], query: str | None) -> str:
 def main() -> int:
     p = argparse.ArgumentParser(description="Baja un RSS y arma el papel del noticiero.")
     p.add_argument("--feed", default=DEFAULT_FEED, help="URL del RSS")
-    p.add_argument("--n", type=int, default=10, help="máximo de notas")
+    p.add_argument("--n", type=int, default=10, help="máximo de notas DESPUÉS del filtro")
     p.add_argument("--query", default="", help="filtro opcional (economía, metro…)")
     p.add_argument("--out", default="", help="si se indica, escribe un .txt")
     args = p.parse_args()
@@ -81,8 +109,8 @@ def main() -> int:
         print("Sin papel no hay noticiero. No inventes el día a mano.", file=sys.stderr)
         return 1
 
-    items = parse_items(raw)[: max(1, args.n)]
-    block = format_notes(items, args.query or None)
+    items = parse_items(raw)
+    block = format_notes(items, args.query or None, args.n)
     print(block)
     if args.out:
         with open(args.out, "w", encoding="utf-8") as fh:
